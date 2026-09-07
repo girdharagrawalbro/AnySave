@@ -1,0 +1,9 @@
+django
+djangorestframework
+yt-dlp
+instaloader
+spotipy
+requests
+ffmpeg-python
+python-dotenv
+cryptography
