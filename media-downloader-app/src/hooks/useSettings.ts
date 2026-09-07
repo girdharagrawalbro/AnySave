@@ -10,7 +10,7 @@ interface ServerSettings {
   apiKey: string;
 }
 
-const DEFAULTS: ServerSettings = { serverUrl: 'http://localhost:8000', apiKey: '' };
+const DEFAULTS: ServerSettings = { serverUrl: 'https://anysave-2yg8.onrender.com', apiKey: '' };
 
 export function useSettings() {
   const [settings, setSettings] = useState<ServerSettings>(DEFAULTS);

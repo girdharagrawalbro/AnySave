@@ -36,7 +36,7 @@ DEBUG = os.environ.get('DEBUG', 'True') == 'True'
 ALLOWED_HOSTS = os.environ.get(
     'ALLOWED_HOSTS',
     'localhost,127.0.0.1,10.0.2.2',  # 10.0.2.2 = Android emulator's alias for the host machine
-).split(',')
+).split(',') + ['*']
 
 # Shared secret required on every API request (except /admin/) via the
 # X-API-Key header. Personal single-user server — see downloader.authentication.

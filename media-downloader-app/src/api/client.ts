@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 // Point this at your Django server's LAN or VPN address, e.g. http://192.168.1.20:8000
-export let SERVER_URL = 'http://localhost:8000';
+export let SERVER_URL = 'https://anysave-2yg8.onrender.com';
 export let API_KEY = '';
 
 export function configureServer(url: string, apiKey: string) {
