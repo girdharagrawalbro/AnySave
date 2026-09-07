@@ -7,3 +7,4 @@ requests
 ffmpeg-python
 python-dotenv
 cryptography
+gunicorn
