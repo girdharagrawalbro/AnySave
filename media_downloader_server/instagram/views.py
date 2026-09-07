@@ -61,7 +61,12 @@ class FollowingView(APIView):
         loader = services.get_loader()
         if loader is None:
             return Response({'error': 'not logged in'}, status=401)
-        return Response(services.list_following(loader))
+        try:
+            return Response(services.list_following(loader))
+        except services.RateLimited as exc:
+            return Response({'error': str(exc)}, status=429)
+        except Exception as exc:  # noqa: BLE001 - instaloader raises many distinct exception types
+            return Response({'error': str(exc)}, status=422)
 
 
 class ProfilePostsView(APIView):
@@ -69,7 +74,12 @@ class ProfilePostsView(APIView):
         loader = services.get_loader()
         if loader is None:
             return Response({'error': 'not logged in'}, status=401)
-        return Response(services.list_profile_posts(loader, username))
+        try:
+            return Response(services.list_profile_posts(loader, username))
+        except services.RateLimited as exc:
+            return Response({'error': str(exc)}, status=429)
+        except Exception as exc:  # noqa: BLE001 - instaloader raises many distinct exception types
+            return Response({'error': str(exc)}, status=422)
 
 
 class SaveView(APIView):

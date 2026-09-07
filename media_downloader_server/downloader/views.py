@@ -13,6 +13,12 @@ from .utils import detect_platform, remove_download
 
 EXTRACTOR_MAP = {
     'youtube': youtube,
+    # Public Instagram posts/reels only -- yt-dlp's Instagram extractor
+    # works without login for public content, same code path as 'generic'.
+    # Private/followed-account content still needs the login+browse flow
+    # under /api/instagram/ (see instagram app), which the RN app falls
+    # back to automatically when this fails.
+    'instagram': generic,
     'spotify': spotify,
     'terabox': terabox,
     'generic': generic,

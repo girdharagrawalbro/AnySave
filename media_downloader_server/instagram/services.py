@@ -18,6 +18,24 @@ from .models import IGSession
 _RATE_LIMIT_DELAY_SECONDS = 2
 
 
+class RateLimited(Exception):
+    """Instagram is rate-limiting us. instaloader's default behavior is to
+    sleep synchronously (sometimes for minutes) and retry -- fatal for a
+    web request, since it blocks the whole worker well past its timeout
+    and gets it killed. We fail fast instead so the view can return a
+    clean error the app can show and retry later.
+    """
+
+
+class _FailFastRateController(instaloader.RateController):
+    def sleep(self, secs):
+        raise RateLimited(f'Instagram is rate-limiting this server. Try again in about {int(secs)}s.')
+
+
+def _new_loader(**kwargs):
+    return instaloader.Instaloader(rate_controller=_FailFastRateController, **kwargs)
+
+
 def _fernet():
     if not settings.SESSION_ENCRYPTION_KEY:
         raise RuntimeError('SESSION_ENCRYPTION_KEY is not configured in .env')
@@ -25,7 +43,7 @@ def _fernet():
 
 
 def login(username, password):
-    loader = instaloader.Instaloader()
+    loader = _new_loader()
     loader.login(username, password)
 
     buffer = io.BytesIO()
@@ -45,7 +63,7 @@ def login_with_cookies(cookies):
     password directly -- lets the real Instagram login page handle 2FA
     and checkpoints itself.
     """
-    loader = instaloader.Instaloader()
+    loader = _new_loader()
     session = requests.Session()
     session.cookies.update(cookies)
     session.headers.update(loader.context._default_http_header())
@@ -75,7 +93,7 @@ def get_loader():
         return None
 
     decrypted = _fernet().decrypt(bytes(session.session_data_encrypted))
-    loader = instaloader.Instaloader()
+    loader = _new_loader()
     loader.context.load_session_from_file(session.username, io.BytesIO(decrypted))
 
     session.save(update_fields=['last_used'])
