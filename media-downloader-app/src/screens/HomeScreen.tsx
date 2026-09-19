@@ -19,11 +19,6 @@ export function HomeScreen() {
   const navigation = useNavigation<any>();
 
   const handleResolve = async (url: string) => {
-    if (isInstagramUrl(url)) {
-      navigation.navigate('Instagram', { pendingUrl: url });
-      return;
-    }
-
     setResolving(true);
     setResult(null);
     setJobId(null);
@@ -33,6 +28,12 @@ export function HomeScreen() {
       setResult(data);
       setQuality(data.qualities[0] ?? '');
     } catch (err: any) {
+      if (isInstagramUrl(url)) {
+        // No-login resolve only works for public posts -- private/followed
+        // accounts need the logged-in browse flow instead.
+        navigation.navigate('Instagram', { pendingUrl: url });
+        return;
+      }
       Alert.alert('Could not resolve link', err?.response?.data?.error ?? err.message);
     } finally {
       setResolving(false);

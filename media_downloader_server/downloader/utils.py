@@ -49,7 +49,13 @@ def remove_download(path):
 def ytdlp_auth_opts():
     """Cookie option to pass into yt-dlp's YoutubeDL(opts) to avoid
     YouTube's "Sign in to confirm you're not a bot" on server IPs.
+
+    YTDLP_COOKIES_FILE (a cookies.txt path) is what actually works on a
+    headless host like Render -- there's no browser there for
+    YTDLP_COOKIES_FROM_BROWSER to read from, so that one's local-dev only.
     """
+    if settings.YTDLP_COOKIES_FILE and os.path.exists(settings.YTDLP_COOKIES_FILE):
+        return {'cookiefile': settings.YTDLP_COOKIES_FILE}
     if settings.YTDLP_COOKIES_FROM_BROWSER:
         return {'cookiesfrombrowser': (settings.YTDLP_COOKIES_FROM_BROWSER,)}
     return {}

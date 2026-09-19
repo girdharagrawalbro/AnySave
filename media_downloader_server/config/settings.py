@@ -160,8 +160,13 @@ DOWNLOADS_ROOT = MEDIA_ROOT / 'downloads'
 SPOTIFY_CLIENT_ID = os.environ.get('SPOTIFY_CLIENT_ID', '')
 SPOTIFY_CLIENT_SECRET = os.environ.get('SPOTIFY_CLIENT_SECRET', '')
 
-# Browser to pull cookies from for yt-dlp requests (fixes YouTube's
-# "Sign in to confirm you're not a bot" on server IPs). e.g. "chrome", "firefox".
+# Path to a Netscape-format cookies.txt for yt-dlp requests (fixes YouTube's
+# "Sign in to confirm you're not a bot"). This is what works on a headless
+# host like Render -- see .env.example for how to generate and mount one.
+YTDLP_COOKIES_FILE = os.environ.get('YTDLP_COOKIES_FILE', '')
+
+# Browser to pull cookies from for yt-dlp -- local dev only, since a
+# deployed server has no browser installed to read cookies from.
 YTDLP_COOKIES_FROM_BROWSER = os.environ.get('YTDLP_COOKIES_FROM_BROWSER', '')
 
 
